@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "965299545949",
+    "project_id": "lowestpricebabyproduct",
+    "storage_bucket": "lowestpricebabyproduct.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965299545949:android:3200080ab19827bfd32ab4",
+        "android_client_info": {
+          "package_name": "com.tistory.dcsun59.lowestpricebabyproduct"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965299545949-1mahqo722ku7umtpsrupsvjc295h3df9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz9nWKDANFG478vAxecqBwGUaVUlqZZNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965299545949-1mahqo722ku7umtpsrupsvjc295h3df9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
