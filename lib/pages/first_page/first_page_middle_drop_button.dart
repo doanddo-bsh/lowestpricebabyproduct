@@ -1,30 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-
-final List<String> itemsProductName = [
-  '매직컴포트',
-  '네이처메이드',
-  '보송보송',
-  '맥스드라이',
-];
-
-final List<String> itemsStage = [
-  '1',
-  '2',
-  '3',
-  '4',
-];
-
-final List<String> itemsType = [
-  '팬티',
-  '밴드',
-];
-final List<String> itemsSex = [
-  '공용',
-  '남아',
-  '여아',
-];
-
+import 'first_page_main.dart';
+import 'package:provider/provider.dart';
+import '../../component/provider_selected_list.dart';
 
 
 class FirstPageDropDownButton extends StatefulWidget {
@@ -32,13 +10,13 @@ class FirstPageDropDownButton extends StatefulWidget {
   String buttonName;
   List<String> itemsList;
   double widthCustom ;
-
-  List<String> selectedItems = [];
+  final void Function(List<String>) getSelectedItemList;
 
   FirstPageDropDownButton({
     required this.buttonName,
     required this.itemsList,
     required this.widthCustom,
+    required this.getSelectedItemList,
     Key? key}) : super(key: key);
 
   @override
@@ -48,108 +26,137 @@ class FirstPageDropDownButton extends StatefulWidget {
 class _FirstPageDropDownButtonState extends State<FirstPageDropDownButton> {
 
   List<String> selectedItems = [];
+  List<String> selectedItemsOrder = [];
 
   @override
   Widget build(BuildContext context) {
 
-    return Center(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2<String>(
-          isExpanded: true,
-          hint: Text(
-            widget.buttonName,
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).hintColor,
+    Selected selectedItemsProvider = Provider.of<Selected>(context);
+
+    var seen = Set<String>();
+    List<String> uniquelist = widget.itemsList.where((e) => seen.add
+      (e)).toList();
+
+    // print('${widget.buttonName} ${widget.itemsList} ${selectedItems}');
+    // widget.selectedItemList = selectedItems ;
+
+    widget.getSelectedItemList(selectedItems);
+
+    return Container(
+      // height: 150.0,
+      width: widget.widthCustom,
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton2<String>(
+            isExpanded: true,
+            hint: Text(
+              widget.buttonName,
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).hintColor,
+              ),
             ),
-          ),
-          items: widget.itemsList.map((item) {
-            return DropdownMenuItem(
-              value: item,
-              //disable default onTap to avoid closing menu when selecting an item
-              enabled: false,
-              child: StatefulBuilder(
-                builder: (context, menuSetState) {
-                  final isSelected = selectedItems.contains(item);
-                  return InkWell(
-                    onTap: () {
-                      isSelected ? selectedItems.remove(item) : selectedItems.add(item);
-                      //This rebuilds the StatefulWidget to update the button's text
-                      setState(() {});
-                      //This rebuilds the dropdownMenu Widget to update the check mark
-                      menuSetState(() {});
-                    },
-                    child: Container(
-                      height: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Row(
-                        children: [
-                          if (isSelected)
-                            const Icon(Icons.check_box_outlined)
-                          else
-                            const Icon(Icons.check_box_outline_blank),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
+            items: uniquelist.map((item) {
+              return DropdownMenuItem(
+                value: item,
+                //disable default onTap to avoid closing menu when selecting an item
+                enabled: false,
+                child: StatefulBuilder(
+                  builder: (context, menuSetState) {
+                    final isSelected = selectedItems.contains(item);
+                    return InkWell(
+                      onTap: () {
+                        isSelected ? selectedItems.remove(item) : selectedItems.add(item);
+
+                        selectedItemsOrder = selectedItemsProvider
+                            .orderingMatch(widget.itemsList, selectedItems);
+
+                        //This rebuilds the StatefulWidget to update the button's text
+                        setState(() {
+                          selectedItemsProvider.filter();
+                        });
+                        //This rebuilds the dropdownMenu Widget to update the check mark
+
+                        menuSetState(() {});
+                      },
+                      child: Container(
+                        height: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          children: [
+                            if (isSelected)
+                              const Icon(Icons.check_box_outlined)
+                            else
+                              const Icon(Icons.check_box_outline_blank),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                    );
+                  },
+                ),
+              );
+            }).toList(),
+            //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+            value: selectedItems.isEmpty ? null : selectedItems.last,
+            onChanged: (item) {
+
+            },
+            selectedItemBuilder: (context) {
+              // drop down 버튼 선택시
+              // print('selectedItems ${selectedItems}');
+
+              // search(selectedItems,);
+
+              return uniquelist.map(
+                    (item) {
+                  return Container(
+                    alignment: AlignmentDirectional.center,
+                    child: Text(
+                      // selectedItems.join(', '),
+                      selectedItemsOrder.join(', '),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 1,
                     ),
                   );
                 },
-              ),
-            );
-          }).toList(),
-          //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
-          value: selectedItems.isEmpty ? null : selectedItems.last,
-          onChanged: (value) {
+              ).toList();
 
-          },
-          selectedItemBuilder: (context) {
-            print(selectedItems);
-            return widget.itemsList.map(
-                  (item) {
-                return Container(
-                  alignment: AlignmentDirectional.center,
-                  child: Text(
-                    selectedItems.join(', '),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    maxLines: 1,
-                  ),
-                );
-              },
-            ).toList();
-          },
-          buttonStyleData: ButtonStyleData(
-            padding: EdgeInsets.only(left: 16, right: 8),
-            height: 40,
-            width: widget.widthCustom,
-          ),
-          dropdownStyleData: DropdownStyleData(
-            maxHeight: 200,
-            width: 140,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: Colors.redAccent,
+            },
+            buttonStyleData: ButtonStyleData(
+              padding: EdgeInsets.only(left: 16, right: 8),
+              height: 40,
+              width: widget.widthCustom,
             ),
-            offset: const Offset(-20, 0),
-            scrollbarTheme: ScrollbarThemeData(
-              radius: const Radius.circular(40),
-              thickness: MaterialStateProperty.all(6),
-              thumbVisibility: MaterialStateProperty.all(true),
+            dropdownStyleData: DropdownStyleData(
+              maxHeight: 200,
+              width: 140,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: Colors.redAccent,
+              ),
+              offset: const Offset(-20, 0),
+              scrollbarTheme: ScrollbarThemeData(
+                radius: const Radius.circular(40),
+                thickness: MaterialStateProperty.all(6),
+                thumbVisibility: MaterialStateProperty.all(true),
+              ),
             ),
-          ),
-          menuItemStyleData: const MenuItemStyleData(
-            height: 40,
-            padding: EdgeInsets.zero,
+            menuItemStyleData: const MenuItemStyleData(
+              height: 40,
+              padding: EdgeInsets.zero,
+            ),
           ),
         ),
       ),
@@ -158,18 +165,32 @@ class _FirstPageDropDownButtonState extends State<FirstPageDropDownButton> {
 }
 
 
-class FirstPageMiddleDropButton extends StatelessWidget {
-  const FirstPageMiddleDropButton({Key? key}) : super(key: key);
+
+class FirstPageMiddleDropButton extends StatefulWidget {
+  FirstPageMiddleDropButton(
+      {Key? key}) : super(key: key);
+
+  @override
+  State<FirstPageMiddleDropButton> createState() => _FirstPageMiddleDropButtonState();
+}
+
+class _FirstPageMiddleDropButtonState extends State<FirstPageMiddleDropButton> {
+
+  // final firestoreInstance = FirebaseFirestore.instance;
+
 
   @override
   Widget build(BuildContext context) {
+
+    Selected selectedItemsProvider = Provider.of<Selected>(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(
                   left: 13.0,
                   top: 10.0,
@@ -179,6 +200,13 @@ class FirstPageMiddleDropButton extends StatelessWidget {
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold
                 ),),
+            ),
+            Expanded(child: SizedBox()),
+            IconButton(onPressed: () async {
+
+
+              }
+              , icon: const Icon(Icons.bookmark)
             ),
           ],
         ),
@@ -190,18 +218,27 @@ class FirstPageMiddleDropButton extends StatelessWidget {
               FirstPageDropDownButton(buttonName:'제품이름'
                   ,itemsList: itemsProductName
                   ,widthCustom: 100.0
+                  ,getSelectedItemList : selectedItemsProvider
+                      .setSelectedItemsProduct
               ),
               FirstPageDropDownButton(buttonName:'단계'
+                  // ,itemsList: itemsStage
                   ,itemsList: itemsStage
                   ,widthCustom: 80.0
+                  ,getSelectedItemList : selectedItemsProvider
+                      .setSelectedItemsStage
               ),
               FirstPageDropDownButton(buttonName:'종류'
                   ,itemsList: itemsType
                   ,widthCustom: 80.0
+                  ,getSelectedItemList : selectedItemsProvider
+                      .setSelectedItemsType
               ),
               FirstPageDropDownButton(buttonName:'성별'
                   ,itemsList: itemsSex
                   ,widthCustom: 80.0
+                  ,getSelectedItemList : selectedItemsProvider
+                      .setSelectedItemsSex
               ),
             ],
           ),

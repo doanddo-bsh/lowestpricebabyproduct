@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import '../second_page/second_page_main.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'first_page_middle_drop_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'first_page_main.dart';
 
 class FirstPageButton extends StatefulWidget {
 
@@ -23,6 +28,15 @@ class FirstPageButton extends StatefulWidget {
 }
 
 class _FirstPageButtonState extends State<FirstPageButton> {
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return
@@ -43,12 +57,17 @@ class _FirstPageButtonState extends State<FirstPageButton> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('하기스'
-                      ,textAlign: TextAlign.start,
+                    ,textAlign: TextAlign.start,
                   ),
-                  Text(widget.productType),
-                  Text("${widget.productStage}단계"),
-                  Text(widget.productShape),
-                  Text(widget.productSex),
+                  AutoSizeText(widget.productType, maxLines: 1,),
+                  AutoSizeText("${widget.productStage}단계", maxLines: 1,),
+                  AutoSizeText(widget.productShape, maxLines: 1,),
+                  AutoSizeText(widget.productSex, maxLines: 1,),
+                  AutoSizeText(priceInfoMap[widget.productType + "${widget
+                      .productStage}" + widget.productShape + widget
+                      .productSex].toString(), maxLines:
+                  1,),
+
                 ],
               )
             ],
