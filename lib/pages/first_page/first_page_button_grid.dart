@@ -1,41 +1,33 @@
 import 'package:flutter/material.dart';
 import '../second_page/second_page_main.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'first_page_middle_drop_button.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'first_page_main.dart';
 
-class FirstPageButton extends StatefulWidget {
+class FirstPageButtonGrid extends StatefulWidget {
 
   String imageAdress;
   String productType;
   String productStage;
   String productShape;
   String productSex;
+  String priceInfo;
 
-  FirstPageButton({
+  FirstPageButtonGrid({
     required this.imageAdress,
     required this.productType,
     required this.productStage,
     required this.productShape,
     required this.productSex,
+    required this.priceInfo,
+
     Key? key}) :
         super(key: key);
 
   @override
-  State<FirstPageButton> createState() => _FirstPageButtonState();
+  State<FirstPageButtonGrid> createState() => _FirstPageButtonState();
 }
 
-class _FirstPageButtonState extends State<FirstPageButton> {
-
-
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+class _FirstPageButtonState extends State<FirstPageButtonGrid> {
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +35,7 @@ class _FirstPageButtonState extends State<FirstPageButton> {
       InkWell(
         child: Container(
           height: 400,
-          margin: EdgeInsets.only(left: 15, right: 15),
+          margin: const EdgeInsets.only(left: 15, right: 15),
           child:
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -56,18 +48,14 @@ class _FirstPageButtonState extends State<FirstPageButton> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('하기스'
+                  const Text('하기스'
                     ,textAlign: TextAlign.start,
                   ),
                   AutoSizeText(widget.productType, maxLines: 1,),
                   AutoSizeText("${widget.productStage}단계", maxLines: 1,),
                   AutoSizeText(widget.productShape, maxLines: 1,),
                   AutoSizeText(widget.productSex, maxLines: 1,),
-                  AutoSizeText(priceInfoMap[widget.productType + "${widget
-                      .productStage}" + widget.productShape + widget
-                      .productSex].toString(), maxLines:
-                  1,),
-
+                  AutoSizeText(widget.priceInfo, maxLines: 1,),
                 ],
               )
             ],

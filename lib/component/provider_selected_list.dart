@@ -122,13 +122,13 @@ class Selected with ChangeNotifier {
     // 체크가 된 리스트만 가지고 오기
     for (final j in List.generate(4, (i) => i)){
       print(j);
-      if (selectedItemList[j].length > 0){
+      if (selectedItemList[j].isNotEmpty){
         selectedItemListHave.add(selectedItemList[j]);
         originalItemListHave.add(originalList[j]);
       }
     }
 
-    if (selectedItemListHave.length == 0){
+    if (selectedItemListHave.isEmpty){
       // no filter
       // print('no filter');
       _filterClicked = false ;
@@ -194,7 +194,7 @@ class Selected with ChangeNotifier {
       });
 
       // for result 0
-      if (rlt.length == 0) {
+      if (rlt.isEmpty) {
         _changeData = [];
       } else {
         _changeData = rlt;

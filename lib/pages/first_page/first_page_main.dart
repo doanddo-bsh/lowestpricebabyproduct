@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'first_page_search_button.dart';
-import 'first_page_button.dart';
-import 'first_page_item_list.dart';
+import 'package:lowestpricebabyproduct/pages/first_page/first_page_button_list.dart';
+import 'first_page_button_grid.dart';
 import 'first_page_middle_drop_button.dart';
 import 'package:flutter/services.dart' show PlatformException, rootBundle;
 import 'package:csv/csv.dart';
@@ -9,13 +8,12 @@ import 'first_page_initPlugin.dart';
 import 'package:provider/provider.dart';
 import '../../component/provider_selected_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 
 var priceInfoMap = Map();
 
 class FirstPageMain extends StatelessWidget {
   const FirstPageMain({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +27,6 @@ class FirstPageMain extends StatelessWidget {
 
 // 검색어
 String searchText = '';
-
 
 class NSView extends StatefulWidget {
   const NSView({Key? key}) : super(key: key);
@@ -62,7 +59,7 @@ class _NSViewState extends State<NSView> {
   // read firestore
   final db = FirebaseFirestore.instance;
 
-  void checkIfAdmin() async{
+  void _loadFirestore() async{
     var rlt_test =
     await db
         .collection("TABLE_TEST")
@@ -73,8 +70,11 @@ class _NSViewState extends State<NSView> {
 
     for (var i in list){
       // print(rlt_test.data()![i.toString()]);
-      priceInfoMap[rlt_test.data()![i.toString()
-      ]['key']]=rlt_test.data()![i.toString()]['장단가'];
+      priceInfoMap[
+        rlt_test.data()![i.toString()]['key']
+      ]
+      = rlt_test.data()![i.toString()]['장단가']
+      ;
     }
     print(priceInfoMap);
 
@@ -92,17 +92,15 @@ class _NSViewState extends State<NSView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) =>initPlugin());
 
+    // load csv all product info
     _loadCSV();
-    checkIfAdmin();
+    // load firestore
+    _loadFirestore();
     // _loadDate = true;
   }
 
   @override
   Widget build(BuildContext context) {
-
-    print('_loadDateCsv ${_loadDateCsv}');
-    print('_loadDateFireStore ${_loadDateFireStore}');
-    print('_loadDateCsv&&_loadDateFireStore ${_loadDateCsv&&_loadDateFireStore}');
 
     Selected selectedItemsProvider = Provider.of<Selected>(context);
     selectedItemsProvider.setProductListData(_productListData);
@@ -119,16 +117,6 @@ class _NSViewState extends State<NSView> {
       floatHeaderSlivers: true,
       // This builds the scrollable content above the body
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
-        // SliverAppBar(
-        //   scrolledUnderElevation: 0.0,
-        //   elevation: 1,
-        //   expandedHeight: 50,
-        //   floating: true,
-        //   // pinned: true, // 안없어지고 남는 것
-        //   forceElevated: innerBoxIsScrolled,
-        //   title: const FirstPageSearchButton(),
-        //   // backgroundColor: Colors.white,
-        // ),
         SliverAppBar(
           toolbarHeight:90.0,
           scrolledUnderElevation: 0.0,
@@ -161,7 +149,7 @@ class _NSViewState extends State<NSView> {
                     _listFormat = false;
                   }
                 });
-                }, icon: _listFormat? Icon(Icons.list):Icon(Icons.grid_view)
+                }, icon: _listFormat? const Icon(Icons.list):const Icon(Icons.grid_view)
               )
             ],
           )
@@ -183,42 +171,47 @@ class _NSViewState extends State<NSView> {
                 childAspectRatio: 8 / 12
             ),
             itemBuilder: (context, index){
-              return FirstPageButton(
+
+              String _priceInfo = priceInfoMap[
+                  productListFinal[index][0].toString()+
+                  productListFinal[index][1].toString()+
+                  productListFinal[index][2].toString()+
+                  productListFinal[index][3].toString()].toString();
+
+              return FirstPageButtonGrid(
                 imageAdress:'assets/product_image_huggies/organic1bandpublic.png',
                 productType:productListFinal[index][0].toString(),
                 productStage:productListFinal[index][1].toString(),
                 productShape:productListFinal[index][2].toString(),
                 productSex:productListFinal[index][3].toString(),
+                priceInfo: _priceInfo,
               );
             },
           ),
         ):Padding(
           padding: const EdgeInsets.only(top:15.0),
-          child: Container(
-            child: ListView.builder(
-              itemCount: productListFinal.length,
-              itemBuilder: (context, index){
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(20.0,3.0,10.0,3.0),
-                  child: Row(
-                    children: [
-                      Text(productListFinal[index][0].toString()),
-                      SizedBox(width: 3.0,),
-                      Text(productListFinal[index][1].toString()),
-                      SizedBox(width: 3.0,),
-                      Text(productListFinal[index][2].toString()),
-                      SizedBox(width: 3.0,),
-                      Text(productListFinal[index][3].toString()),
-                      SizedBox(width: 3.0,),
-                      Text('가격'),
-                    ],
-                  ),
-                );
-              }
-            ),
+          child: ListView.builder(
+            itemCount: productListFinal.length,
+            itemBuilder: (context, index){
+
+              String _priceInfo = priceInfoMap[
+                productListFinal[index][0].toString()+
+                productListFinal[index][1].toString()+
+                productListFinal[index][2].toString()+
+                productListFinal[index][3].toString()].toString();
+
+              return FirstPageButtonList(
+                imageAdress:'assets/product_image_huggies/organic1bandpublic.png',
+                productType:productListFinal[index][0].toString(),
+                productStage:productListFinal[index][1].toString(),
+                productShape:productListFinal[index][2].toString(),
+                productSex:productListFinal[index][3].toString(),
+                priceInfo: _priceInfo,
+              );
+            }
           ),
         )
-      :Center(child: CircularProgressIndicator())
+      :const Center(child: CircularProgressIndicator())
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'first_page_main.dart';
 import 'package:provider/provider.dart';
 import '../../component/provider_selected_list.dart';
 
@@ -135,7 +134,7 @@ class _FirstPageDropDownButtonState extends State<FirstPageDropDownButton> {
 
             },
             buttonStyleData: ButtonStyleData(
-              padding: EdgeInsets.only(left: 16, right: 8),
+              padding: const EdgeInsets.only(left: 16, right: 8),
               height: 40,
               width: widget.widthCustom,
             ),
@@ -201,10 +200,9 @@ class _FirstPageMiddleDropButtonState extends State<FirstPageMiddleDropButton> {
                     fontWeight: FontWeight.bold
                 ),),
             ),
-            Expanded(child: SizedBox()),
+            const Expanded(child: SizedBox()),
             IconButton(onPressed: () async {
-
-
+              print('즐겨찾기 구현 필요..');
               }
               , icon: const Icon(Icons.bookmark)
             ),

@@ -18,7 +18,7 @@ void main() async {
           providers: [
             ChangeNotifierProvider(create: (_) => Selected()),
           ],
-          child: MyApp(),
+          child: const MyApp(),
         ),
   );
 }

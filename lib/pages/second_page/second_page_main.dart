@@ -7,22 +7,22 @@ class SecondPageMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           title:const Text('제품상세정보', style: TextStyle(color: Colors.black),),
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.navigate_before_outlined),
+            icon: const Icon(Icons.navigate_before_outlined),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          actions: [IconButton(icon: Icon(Icons.search_rounded),onPressed: () {
+          actions: [IconButton(icon: const Icon(Icons.search_rounded),onPressed: () {
             print('qwerqwer');
           },
           ),
-            IconButton(icon: Icon(Icons.favorite_border_outlined),onPressed: () {
+            IconButton(icon: const Icon(Icons.favorite_border_outlined),onPressed: () {
               print('zxcvzxcv');
             },),
           ],
@@ -33,7 +33,7 @@ class SecondPageMain extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 30,),
+                  const SizedBox(height: 30,),
                   Container(child: Image.asset
                     ('assets/product_image_huggies/organic1bandpublic.png',
                     width: 125,
@@ -54,13 +54,13 @@ class SecondPageMain extends StatelessWidget {
                     ),
                   ),
                   Container(width: 380, height: 40,
-                    child: Divider(color: Colors.grey,thickness: 0.2),)
+                    child: const Divider(color: Colors.grey,thickness: 0.2),)
                 ],
               ),
             ),
             Container(
                 alignment:Alignment.topLeft,
-                child: Text("최저가(매당가격)",textAlign: TextAlign.start)
+                child: const Text("최저가(매당가격)",textAlign: TextAlign.start)
             ),
           ],
         )
